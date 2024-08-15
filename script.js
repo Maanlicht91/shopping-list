@@ -1,6 +1,7 @@
 const form = document.getElementById("item-form");
 const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById("item-list");
+const clearBtn = document.getElementById("clear");
 
 //* Add Items
 function addItem(e) {
@@ -45,5 +46,25 @@ function createIcon(classes) {
   return icon;
 }
 
+//* Remove item and Clear all items
+
+//! Remove item
+function removeItem(e) {
+  if (e.target.classList.contains("fa-xmark")) {
+    e.target.parentElement.parentElement.remove();
+  }
+}
+
+//! Clear All
+function clearItems() {
+  while (itemList.firstChild) {
+    itemList.removeChild(itemList.firstChild);
+  }
+}
+
 //0 Add Item
 form.addEventListener("submit", addItem);
+//0 Remove item
+itemList.addEventListener("click", removeItem);
+//0 Clear All
+clearBtn.addEventListener("click", clearItems);
