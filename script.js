@@ -4,7 +4,14 @@ const itemList = document.getElementById("item-list");
 const clearBtn = document.getElementById("clear");
 const filter = document.getElementById("filter");
 
-//* Add Items
+//* Display Items ---------------------------------------------------------------------------
+function displayItems() {
+  const itemsFromStorage = getItemFromStorage();
+  itemsFromStorage.forEach((item) => addItemToDOM(item));
+
+  checkUI();
+}
+//* Add Items----------------------------------------------------------------------------------
 function onAddItemSubmit(e) {
   e.preventDefault();
 
@@ -41,16 +48,22 @@ function addItemToDOM(item) {
 
 //* Add Item to Local Storage
 function addItemToStorage(item) {
+  const itemsFromStorage = getItemFromStorage();
+  itemsFromStorage.push(item);
+
+  //! Convert JSON string and set to localStorage
+  localStorage.setItem("items", JSON.stringify(itemsFromStorage));
+}
+
+//* Get Item from Storage
+function getItemFromStorage() {
   let itemsFromStorage;
   if (localStorage.getItem("items") === null) {
     itemsFromStorage = [];
   } else {
     itemsFromStorage = JSON.parse(localStorage.getItem("items"));
   }
-  itemsFromStorage.push(item);
-
-  //! Convert JSON string and set to localStorage
-  localStorage.setItem("items", JSON.stringify(itemsFromStorage));
+  return itemsFromStorage;
 }
 
 //* Create Button and Icon
@@ -73,7 +86,7 @@ function createIcon(classes) {
   return icon;
 }
 
-//* Remove item and Clear all items
+//* Remove item and Clear all items------------------------------------------------------------------------
 
 //! Remove item
 function removeItem(e) {
@@ -97,7 +110,7 @@ function clearItems() {
   checkUI();
 }
 
-//* ResetUI or checkUI - remove filter and clear button when none item
+//* ResetUI or checkUI - remove filter and clear button when none item----------------------------------------
 
 function checkUI() {
   const hasItem = itemList.children.length;
@@ -106,7 +119,7 @@ function checkUI() {
   clearBtn.style.display = hasItem ? "block" : "none";
 }
 
-//* Filter Items
+//* Filter Items----------------------------------------------------------------------------------------------
 function filterItems(e) {
   const text = e.target.value.toLowerCase();
   const items = itemList.querySelectorAll("li");
@@ -128,3 +141,5 @@ clearBtn.addEventListener("click", clearItems);
 filter.addEventListener("input", filterItems);
 //0 Reset UI
 checkUI();
+//0 Display items
+document.addEventListener("DOMContentLoaded", displayItems);
