@@ -83,11 +83,25 @@ function checkUI() {
   clearBtn.style.display = hasItem ? "block" : "none";
 }
 
+//* Filter Items
+function filterItems(e) {
+  const text = e.target.value.toLowerCase();
+  const items = itemList.querySelectorAll("li");
+
+  items.forEach((item) => {
+    const itemName = item.firstChild.textContent.toLowerCase().trim();
+    item.style.display = itemName.includes(text) ? "flex" : "none";
+    //item.style.display = itemName.startsWith(text) ? "flex" : "none";
+  });
+}
+
 //0 Add Item
 form.addEventListener("submit", addItem);
 //0 Remove item
 itemList.addEventListener("click", removeItem);
 //0 Clear All
 clearBtn.addEventListener("click", clearItems);
+//0 Filter Items
+filter.addEventListener("input", filterItems);
 //0 Reset UI
 checkUI();
