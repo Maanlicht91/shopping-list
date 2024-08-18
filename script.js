@@ -89,15 +89,35 @@ function createIcon(classes) {
 //* Remove item and Clear all items------------------------------------------------------------------------
 
 //! Remove item
-function removeItem(e) {
+function onClickItem(e) {
   if (e.target.classList.contains("fa-xmark")) {
-    if (confirm("Are you sure?")) {
-      e.target.parentElement.parentElement.remove();
-    }
-
-    //! Reset UI
-    checkUI();
+    removeItem(e.target.parentElement.parentElement);
   }
+}
+
+//! Remove item from DOM
+function removeItem(item) {
+  if (confirm("Are you sure to remove?")) {
+    //-- Remove from DOM
+    item.remove();
+
+    //-- Remove from storage
+    removeItemFromStorage(item.textContent);
+  }
+
+  //! Reset UI
+  checkUI();
+}
+
+//! Remove item from Local Storage
+function removeItemFromStorage(item) {
+  let itemsFromStorage = getItemFromStorage();
+
+  //-- Filter out item to be removed
+  itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
+
+  //-- Re-set to localStorage
+  localStorage.setItem("items", JSON.stringify(itemsFromStorage));
 }
 
 //! Clear All
@@ -105,6 +125,9 @@ function clearItems() {
   while (itemList.firstChild) {
     itemList.removeChild(itemList.firstChild);
   }
+
+  //! Clear All from Storage
+  localStorage.removeItem("items");
 
   //! Reset UI
   checkUI();
@@ -131,15 +154,20 @@ function filterItems(e) {
   });
 }
 
-//0 Add Item
-form.addEventListener("submit", onAddItemSubmit);
-//0 Remove item
-itemList.addEventListener("click", removeItem);
-//0 Clear All
-clearBtn.addEventListener("click", clearItems);
-//0 Filter Items
-filter.addEventListener("input", filterItems);
-//0 Reset UI
-checkUI();
-//0 Display items
-document.addEventListener("DOMContentLoaded", displayItems);
+function init() {
+  //! Add Event Listeners
+  //0 Add Item
+  form.addEventListener("submit", onAddItemSubmit);
+  //0 Remove item
+  itemList.addEventListener("click", onClickItem);
+  //0 Clear All
+  clearBtn.addEventListener("click", clearItems);
+  //0 Filter Items
+  filter.addEventListener("input", filterItems);
+  //0 Reset UI
+  checkUI();
+  //0 Display items
+  document.addEventListener("DOMContentLoaded", displayItems);
+}
+
+init();
