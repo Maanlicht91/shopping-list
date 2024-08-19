@@ -28,6 +28,12 @@ function onAddItemSubmit(e) {
     itemToEdit.classList.remove("edit-item");
     itemToEdit.remove();
     isEditMode = false;
+  } else {
+    //! Prevent add duplicate item
+    if (checkIfItemExists(newItem)) {
+      alert("That item already exists!");
+      return;
+    }
   }
 
   //! Add item to DOM
@@ -189,6 +195,12 @@ function filterItems(e) {
     item.style.display = itemName.includes(text) ? "flex" : "none";
     //item.style.display = itemName.startsWith(text) ? "flex" : "none";
   });
+}
+
+//* Prevent Duplicate Items
+function checkIfItemExists(item) {
+  const itemsFromStorage = getItemFromStorage();
+  return itemsFromStorage.includes(item);
 }
 
 function init() {
