@@ -3,6 +3,8 @@ const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById("item-list");
 const clearBtn = document.getElementById("clear");
 const filter = document.getElementById("filter");
+const formBtn = form.querySelector("button");
+let isEditMode = false;
 
 //* Display Items ---------------------------------------------------------------------------
 function displayItems() {
@@ -18,6 +20,15 @@ function onAddItemSubmit(e) {
   //! Check if input empty to alert
   const newItem = itemInput.value;
   if (newItem === "") alert("Please add an item");
+
+  //! Update item -- we can't update actually just remove and add
+  if (isEditMode) {
+    const itemToEdit = itemList.querySelector(".edit-item");
+    removeItemFromStorage(itemToEdit.textContent);
+    itemToEdit.classList.remove("edit-item");
+    itemToEdit.remove();
+    isEditMode = false;
+  }
 
   //! Add item to DOM
   addItemToDOM(newItem);
@@ -92,7 +103,28 @@ function createIcon(classes) {
 function onClickItem(e) {
   if (e.target.classList.contains("fa-xmark")) {
     removeItem(e.target.parentElement.parentElement);
+  } else {
+    setItemToEdit(e.target);
   }
+}
+
+//* Set item to Edit ----------------------------------------------------------------------------------
+function setItemToEdit(item) {
+  isEditMode = true;
+  //-- Reset selected item
+  itemList
+    .querySelectorAll("li")
+    .forEach((i) => i.classList.remove("edit-item"));
+
+  //-- Style item color
+  item.classList.add("edit-item");
+
+  //-- Style button
+  formBtn.style.backgroundColor = "#228B22";
+  formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
+
+  //-- Get item on input
+  itemInput.value = item.textContent.trim();
 }
 
 //! Remove item from DOM
@@ -140,6 +172,11 @@ function checkUI() {
   // const hasItem = itemList.firstElementChild;
   filter.style.display = hasItem ? "block" : "none";
   clearBtn.style.display = hasItem ? "block" : "none";
+
+  //-- Reset Update Mode
+  isEditMode = false;
+  formBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Item';
+  formBtn.style.backgroundColor = "#333";
 }
 
 //* Filter Items----------------------------------------------------------------------------------------------
